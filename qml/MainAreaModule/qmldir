@@ -1,0 +1,3 @@
+module MainAreaModule
+MainArea 1.0 MainArea.qml
+MainTabButton 1.0 MainTabButton.qml
