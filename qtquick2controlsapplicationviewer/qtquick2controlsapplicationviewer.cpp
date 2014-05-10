@@ -14,13 +14,16 @@
 #include <QQmlEngine>
 #include <QQuickView>
 
+#include "fileprocessor.h"
+
 class QtQuick2ApplicationViewerPrivate
 {
     QString mainQmlFile;
     QQmlEngine engine;
     QQuickWindow *window;
+    QScopedPointer<FileProcessor> processor;
 
-    QtQuick2ApplicationViewerPrivate() : window(0)
+    QtQuick2ApplicationViewerPrivate() : window(0), processor(new FileProcessor)
     {}
 
     ~QtQuick2ApplicationViewerPrivate()
@@ -88,6 +91,8 @@ void QtQuick2ControlsApplicationViewer::setMainQmlFile(const QString &file)
         qFatal("Error: Your root item has to be a Window.");
 
     d->engine.setIncubationController(d->window->incubationController());
+
+    d->processor->setRootItem(d->window);
 }
 
 void QtQuick2ControlsApplicationViewer::addImportPath(const QString &path)

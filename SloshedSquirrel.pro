@@ -5,10 +5,14 @@ DEPLOYMENTFOLDERS = folder_01
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH = \
-    qml/MainAreaModule/
+
+CONFIG += c++11
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    processoptions.cpp \
+    fileprocessor.cpp \
+    fileinfo.cpp
 
 # Installation path
 # target.path =
@@ -21,3 +25,11 @@ OTHER_FILES += \
     qml/MainAreaModule/MainArea.qml \
     qml/MainAreaModule/MainTabButton.qml \
     qml/MainAreaModule/qmldir
+
+HEADERS += \
+    processoptions.h \
+    Private/processoptions_p.h \
+    fileprocessor.h \
+    Private/fileprocessor_p.h \
+    fileinfo.h
+
