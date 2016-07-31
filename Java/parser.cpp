@@ -10,6 +10,7 @@ using namespace Java;
 
 namespace {
     const QString JAVA_SUFFIX = "java";
+    const QString TEST_PATH = "/test/java/";
 }
 
 Parser::Parser(QObject *parent)
@@ -29,7 +30,8 @@ bool Parser::parse(const QString & path)
     Q_D(Java::Parser);
     d->findFiles(path);
 
-    qDebug() << "Found:" << d->m_files.size() << "files total";
+    qDebug() << "Found" << d->m_files.size() << "files and"
+             << d->m_testFiles.size() << "test files";
 
     return !(d->m_files.isEmpty());
 }
@@ -66,7 +68,16 @@ void ParserPrivate::parseDirectory(const QString &path)
         if(info.isDir()) {
             parseDirectory(info.absoluteFilePath());
         } else if(info.completeSuffix() == JAVA_SUFFIX) {
-            m_files.append(info.absoluteFilePath());
+            addFile(info.absoluteFilePath());
         }
+    }
+}
+
+void ParserPrivate::addFile(const QString & path)
+{
+    if(path.contains(TEST_PATH)) {
+        m_testFiles.append(path);
+    } else {
+        m_files.append(path);
     }
 }

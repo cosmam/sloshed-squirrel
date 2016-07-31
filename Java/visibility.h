@@ -6,7 +6,9 @@ namespace Java
 
     enum class Visibility {
         Public,
-        Package
+        Protected,
+        Package,
+        Private
     };
 
 }

@@ -23,9 +23,12 @@ namespace Java
 
         void parseDirectory(const QString & path);
 
+        void addFile(const QString & path);
+
         Java::Parser * q_ptr;
 
         QStringList m_files;
+        QStringList m_testFiles;
     };
 }
 
