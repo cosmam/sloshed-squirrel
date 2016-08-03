@@ -1,6 +1,8 @@
 #include "parser.h"
-
 #include "Private/parser_p.h"
+
+#include "ifile.h"
+#include "filefactory.h"
 
 #include <QDir>
 
@@ -33,20 +35,23 @@ bool Parser::parse(const QString & path)
     qDebug() << "Found" << d->m_files.size() << "files and"
              << d->m_testFiles.size() << "test files";
 
+    d->m_factory->parseFile("/data/Programs/SpellViewer/Code/muddled-manticore/app/src/main/java/com/cosmam/programs/spellviewer/views/SpellGrouper.java");
+
     return !(d->m_files.isEmpty());
 }
 
 /************* Private class implementation *************/
 
 
-Java::ParserPrivate::ParserPrivate(Java::Parser *parent)
+ParserPrivate::ParserPrivate(Java::Parser *parent)
   : QObject(parent),
-    q_ptr(parent)
+    q_ptr(parent),
+    m_factory(std::make_unique<Java::Impl::FileFactory>(parent))
 {
 
 }
 
-Java::ParserPrivate::~ParserPrivate()
+ParserPrivate::~ParserPrivate()
 {
 
 }

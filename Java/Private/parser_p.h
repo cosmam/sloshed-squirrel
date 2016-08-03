@@ -3,9 +3,16 @@
 
 #include <QObject>
 
+#include <memory>
+
 namespace Java
 {
     class Parser;
+
+    namespace Impl
+    {
+        class FileFactory;
+    }
 
     class ParserPrivate : public QObject
     {
@@ -26,6 +33,8 @@ namespace Java
         void addFile(const QString & path);
 
         Java::Parser * q_ptr;
+
+        std::unique_ptr<Java::Impl::FileFactory> m_factory;
 
         QStringList m_files;
         QStringList m_testFiles;
