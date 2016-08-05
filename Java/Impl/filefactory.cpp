@@ -56,16 +56,19 @@ std::unique_ptr<IFile> FileFactory::parseFile(const QString & path) const
     Q_D(const FileFactory);
     auto file = d->parseFile(path);
 
-    qDebug() << "\n\t" << file->path()
-             << "\n\t" << file->name()
-             << "\n\t" << file->package()
-             << "\n\t" << toString(file->visibility())
-             << "\n\tTotal:   " << file->totalLines()
-             << "\n\tImport:  " << file->importLines()
-             << "\n\tComment: " << file->commentLines()
-             << "\n\tBlank:   " << file->blankLines()
-             << "\n\tCode:    " << file->codeLines()
-             << "\n\tMethods: " << file->methodCount();
+    qDebug() << file->path()
+             << file->name()
+             << file->package()
+             << toString(file->visibility())
+             << file->totalLines()
+             << file->importLines()
+             << file->commentLines()
+             << file->blankLines()
+             << file->codeLines()
+             << file->methodCount()
+             << file->interfaceCount()
+             << file->classCount();
+
     return file;
 }
 
@@ -195,6 +198,123 @@ void FileFactoryPrivate::processCodeLines(const std::unique_ptr<CodeFile> &file,
     file->setCodeLines(lines.size());
     file->setPackage(paredLines.takeFirst().simplified().replace(PACKAGE_START, "").replace(";", ""));
     file->setVisibility(getVisibility(paredLines.takeFirst().simplified()));
+    paredLines.removeLast();
+    processCode(file, paredLines);
+}
+
+void FileFactoryPrivate::processCode(const std::unique_ptr<CodeFile> &file, const QStringList &lines) const
+{
+    auto closures = binClosures(lines);
+
+    closures = processAnonymous(file, closures);
+    closures = processInterfaces(file, closures);
+    closures = processClasses(file, closures);
+    closures = processMethods(file, closures);
+}
+
+QList<QStringList> FileFactoryPrivate::binClosures(const QStringList &lines) const
+{
+    QList<QStringList> closures;
+    QStringList closure;
+    int bracketCount = 0;
+
+    for(const QString & line : lines) {
+        if(line.contains("{")) {
+            ++bracketCount;
+        }
+
+        if(bracketCount > 0) {
+            closure.append(line);
+        }
+
+        if(line.contains("}") && ((--bracketCount) == 0)) {
+            closures.append(closure);
+            closure.clear();
+        }
+    }
+
+    if(closures.isEmpty()) {
+        closures.append(lines);
+    }
+
+    return closures;
+}
+
+QList<QStringList> FileFactoryPrivate::processAnonymous(const std::unique_ptr<CodeFile> &file, const QList<QStringList> &closures) const
+{
+    Q_UNUSED(file);
+
+    QList<QStringList> paredClosures;
+
+    for(const QStringList & closure : closures) {
+        if(!closure.first().contains("=")) {
+            paredClosures.append(closure);
+        }
+    }
+
+    return paredClosures;
+}
+
+QList<QStringList> FileFactoryPrivate::processInterfaces(const std::unique_ptr<CodeFile> &file, const QList<QStringList> &closures) const
+{
+    QList<QStringList> paredClosures;
+
+    int count = 0;
+    for(const QStringList & closure : closures) {
+        if(closure.first().contains(" interface ")) {
+            QStringList code(closure);
+            code.removeFirst();
+            code.removeLast();
+            processCode(file, code);
+            ++count;
+        } else {
+            paredClosures.append(closure);
+        }
+    }
+
+    file->setInterfaceCount(count + file->interfaceCount());
+
+    return paredClosures;
+}
+
+QList<QStringList> FileFactoryPrivate::processClasses(const std::unique_ptr<CodeFile> &file, const QList<QStringList> &closures) const
+{
+    QList<QStringList> paredClosures;
+
+    int count = 0;
+    for(const QStringList & closure : closures) {
+        if(closure.first().contains(" class ")) {
+            QStringList code(closure);
+            code.removeFirst();
+            code.removeLast();
+            processCode(file, code);
+            ++count;
+        } else {
+            paredClosures.append(closure);
+        }
+    }
+
+    file->setClassCount(count + file->classCount());
+
+    return paredClosures;
+}
+
+QList<QStringList> FileFactoryPrivate::processMethods(const std::unique_ptr<CodeFile> &file, const QList<QStringList> &closures) const
+{
+    QList<QStringList> paredClosures;
+
+    int count = 0;
+    for(const QStringList & closure : closures) {
+        if(closure.first().contains("(") && closure.first().contains(")")) {
+            ++count;
+        } else {
+            paredClosures.append(closure);
+        }
+    }
+
+    file->setMethodCount(count + file->methodCount());
+
+    return paredClosures;
 }
 
 Visibility FileFactoryPrivate::getVisibility(const QString &line) const

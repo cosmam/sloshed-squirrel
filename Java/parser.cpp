@@ -35,7 +35,9 @@ bool Parser::parse(const QString & path)
     qDebug() << "Found" << d->m_files.size() << "files and"
              << d->m_testFiles.size() << "test files";
 
-    d->m_factory->parseFile("/data/Programs/SpellViewer/Code/muddled-manticore/app/src/main/java/com/cosmam/programs/spellviewer/views/SpellGrouper.java");
+    for(const QString & file : d->m_files) {
+        d->m_factory->parseFile(file);
+    }
 
     return !(d->m_files.isEmpty());
 }

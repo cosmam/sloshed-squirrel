@@ -44,6 +44,18 @@ namespace Java
 
             void processCodeLines(const std::unique_ptr<Java::Impl::CodeFile> & file, const QStringList & lines) const;
 
+            void processCode(const std::unique_ptr<Java::Impl::CodeFile> & file, const QStringList & lines) const;
+
+            QList<QStringList> binClosures(const QStringList & lines) const;
+
+            QList<QStringList> processAnonymous(const std::unique_ptr<Java::Impl::CodeFile> & file, const QList<QStringList> & closures) const;
+
+            QList<QStringList> processInterfaces(const std::unique_ptr<Java::Impl::CodeFile> & file, const QList<QStringList> & closures) const;
+
+            QList<QStringList> processClasses(const std::unique_ptr<Java::Impl::CodeFile> & file, const QList<QStringList> & closures) const;
+
+            QList<QStringList> processMethods(const std::unique_ptr<Java::Impl::CodeFile> & file, const QList<QStringList> & closures) const;
+
             Java::Visibility getVisibility(const QString & line) const;
 
             bool isBlankLine(const QString & line) const;

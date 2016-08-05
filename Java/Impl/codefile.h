@@ -51,6 +51,14 @@ namespace Java
 
             void setMethodCount(int methodCount);
 
+            virtual int interfaceCount() const override final;
+
+            void setInterfaceCount(int interfaceCount);
+
+            virtual int classCount() const override final;
+
+            void setClassCount(int classCount);
+
         private:
 
             class Impl;

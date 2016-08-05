@@ -32,6 +32,10 @@ namespace Java
         virtual int codeLines() const = 0;
 
         virtual int methodCount() const = 0;
+
+        virtual int interfaceCount() const = 0;
+
+        virtual int classCount() const = 0;
     };
 }
 
