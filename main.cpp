@@ -1,12 +1,13 @@
-#include "qtquick2controlsapplicationviewer.h"
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[])
 {
-    Application app(argc, argv);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication app(argc, argv);
 
-    QtQuick2ControlsApplicationViewer viewer;
-    viewer.setMainQmlFile(QStringLiteral("qml/SloshedSquirrel/main.qml"));
-    viewer.show();
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QLatin1String("qrc:/main.qml")));
 
     return app.exec();
 }
