@@ -2,6 +2,8 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 
+RESOURCES += qml.qrc
+
 SOURCES += unittests/main.cpp \
     unittests/src/core/initparams.cpp \
     unittests/src/core/testcasefactory.cpp \

@@ -13,7 +13,8 @@ namespace Test
         {
         public:
             TestCase();
-            ~TestCase();
+
+            virtual ~TestCase();
         };
     }
 }
