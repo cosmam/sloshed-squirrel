@@ -1,0 +1,7 @@
+CONFIG += c++14
+
+INCLUDEPATH += src/
+
+HEADERS += \
+
+SOURCES += \
